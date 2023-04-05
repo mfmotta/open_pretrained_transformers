@@ -125,7 +125,8 @@ def distributed_init(cfg: MetaseqConfig):
         cfg = convert_namespace_to_omegaconf(cfg)
 
     # silence torch's distributed initialization info
-    logging.getLogger("torch.distributed.distributed_c10d").setLevel(logging.WARNING)
+    # logging.getLogger("torch.distributed.distributed_c10d").setLevel(logging.WARNING) #MM original
+    logging.getLogger("torch.distributed.distributed_c10d").setLevel(logging.INFO)
 
     if torch.distributed.is_available() and torch.distributed.is_initialized():
         logger.warning("Distributed is already initialized, cannot initialize twice!")
@@ -159,7 +160,9 @@ def distributed_init(cfg: MetaseqConfig):
     if is_master(cfg.distributed_training):
         logging.getLogger().setLevel(logging.INFO)
     else:
-        logging.getLogger().setLevel(logging.WARNING)
+        logging.getLogger().setLevel(
+            logging.WARNING
+        )  # MM changed from logging.WARNING to logging.INFO
 
     nodelist = os.environ.get("SLURM_STEP_NODELIST")
     if nodelist:
