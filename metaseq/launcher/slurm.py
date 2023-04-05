@@ -141,7 +141,10 @@ def is_job_valid(args, save_dir, dry_run):
 
 
 DEFAULT_NCCL_DEBUG = os.getenv("NCCL_DEBUG", "INFO")
-DEFAULT_NCCL_DEBUG_LOCAL = os.getenv("NCCL_DEBUG", "")
+# DEFAULT_NCCL_DEBUG_LOCAL = os.getenv("NCCL_DEBUG", "") #MM original code
+DEFAULT_NCCL_DEBUG_LOCAL = os.getenv(
+    "NCCL_DEBUG", "INFO"
+)  # MM trying to fix NCCL operations timeout, see https://github.com/facebookresearch/metaseq/issues/652
 
 
 def set_env(args, env, dry_run):
