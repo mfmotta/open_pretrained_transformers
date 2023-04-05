@@ -146,11 +146,25 @@ DEFAULT_NCCL_DEBUG_LOCAL = os.getenv(
     "NCCL_DEBUG", "INFO"
 )  # MM trying to fix NCCL operations timeout, see https://github.com/facebookresearch/metaseq/issues/652
 
+## MM test:
+TEST = os.getenv("NCCL_IB_DISABLE")
+TEST2 = os.getenv("NCCL_DEBUG")
+print("TEST env", TEST, TEST2)
+
+os.environ["NCCL_IB_DISABLE"] = "1"
+os.environ["NCCL_DEBUG"] = "INFO"
+os.environ["TORCH_DISTRIBUTED_DEBUG"] = "DETAIL"
+
+TEST = os.getenv("NCCL_IB_DISABLE")
+TEST2 = os.getenv("NCCL_DEBUG")
+TEST3 = os.getenv("TORCH_DISTRIBUTED_DEBUG")
+print("TEST env", TEST, TEST2, TEST3)
+
 
 def set_env(args, env, dry_run):
     env[
         "NCCL_IB_DISABLE"
-    ] = 1  # fix NCCL timeout https://github.com/karpathy/nanoGPT/pull/55
+    ] = "1"  # fix NCCL timeout https://github.com/karpathy/nanoGPT/pull/55
     if "OMP_NUM_THREADS" not in env:
         env["OMP_NUM_THREADS"] = "2"
     env["NCCL_ASYNC_ERROR_HANDLING"] = "1"
@@ -163,6 +177,14 @@ def set_env(args, env, dry_run):
         if args.num_nodes > 1:
             env["NCCL_SOCKET_IFNAME"] = "^docker0,lo"
             env["NCCL_DEBUG"] = DEFAULT_NCCL_DEBUG
+
+    env["NCCL_IB_DISABLE"] = "1"
+    env["NCCL_DEBUG"] = "INFO"
+    env["TORCH_DISTRIBUTED_DEBUG"] = "DETAIL"
+    TEST = os.getenv("NCCL_IB_DISABLE")
+    TEST2 = os.getenv("NCCL_DEBUG")
+    TEST3 = os.getenv("TORCH_DISTRIBUTED_DEBUG")
+    print("\n Testing set_env", TEST, TEST2, TEST3)
 
 
 def gen_train_command(
@@ -356,6 +378,13 @@ def local_run(args, env, train_cmd, dry_run):
         env["NCCL_DEBUG"] = DEFAULT_NCCL_DEBUG_LOCAL
         train_proc = subprocess.Popen(train_cmd, env=env)
         train_proc.wait()
+        env["NCCL_IB_DISABLE"] = "1"
+        env["NCCL_DEBUG"] = "INFO"
+        env["TORCH_DISTRIBUTED_DEBUG"] = "DETAIL"
+        TEST = os.getenv("NCCL_IB_DISABLE")
+        TEST2 = os.getenv("NCCL_DEBUG")
+        TEST3 = os.getenv("TORCH_DISTRIBUTED_DEBUG")
+        print("\n MM  Testing local_run", TEST, TEST2, TEST3)
 
 
 def run_batch(env, sbatch_cmd_str, sbatch_cmd):
