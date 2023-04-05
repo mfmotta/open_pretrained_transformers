@@ -148,6 +148,9 @@ DEFAULT_NCCL_DEBUG_LOCAL = os.getenv(
 
 
 def set_env(args, env, dry_run):
+    env[
+        "NCCL_IB_DISABLE"
+    ] = 1  # fix NCCL timeout https://github.com/karpathy/nanoGPT/pull/55
     if "OMP_NUM_THREADS" not in env:
         env["OMP_NUM_THREADS"] = "2"
     env["NCCL_ASYNC_ERROR_HANDLING"] = "1"
