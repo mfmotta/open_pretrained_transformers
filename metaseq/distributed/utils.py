@@ -161,7 +161,7 @@ def distributed_init(cfg: MetaseqConfig):
         logging.getLogger().setLevel(logging.INFO)
     else:
         logging.getLogger().setLevel(
-            logging.WARNING
+            logging.INFO
         )  # MM changed from logging.WARNING to logging.INFO
 
     nodelist = os.environ.get("SLURM_STEP_NODELIST")
